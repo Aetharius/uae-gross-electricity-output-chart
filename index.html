@@ -2,156 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UAE Electricity Output Chart</title>
-  <link href="https://fonts.googleapis.com/css2?family=Brix+Slab:wght@300;500;700&family=Signika&display=swap" rel="stylesheet">
+  <title>UAE Electricity Output by Source</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      background-color: #fff;
-      padding: 20px;
-      font-family: 'Brix Slab', sans-serif;
-    }
-    h2 {
-      font-size: 22px;
-      color: #969799;
-      max-width: 800px;
-    }
-    .bold-text {
-      font-weight: 700;
-    }
-    .medium-text {
-      font-weight: 500;
-    }
-    .light-text {
-      font-weight: 300;
-    }
-    .chart-container {
-      width: 595px; /* 80% of A4 width (A4 = 210mm ~ 794px at 96dpi) */
-      height: 400px;
-      margin-bottom: 30px;
-    }
-    .btn-container {
-      margin-bottom: 20px;
-    }
-    .energy-btn {
-      font-family: 'Signika', sans-serif;
-      margin-right: 10px;
-      padding: 8px 16px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-      border-radius: 5px;
-      background-color: #d3d3d3;
-    }
-    .active-natural {
-      background-color: #a3cd84 !important;
-      color: #000;
-    }
-    .active-nuclear {
-      background-color: #8bbce7 !important;
-      color: #000;
-    }
-    .active-renewables {
-      background-color: #f3c638 !important;
-      color: #000;
-    }
-  </style>
-</head>
-<body>
-  <h2>
-    <span class="bold-text">The UAE's gross electricity output by source,</span>
-    <span class="medium-text"> 2019-2023</span>
-    <span class="light-text"> (TWh)</span>
-  </h2>
 
-  <div class="btn-container">
-    <button class="energy-btn active-natural" onclick="toggleDataset(0, 'natural')" id="btn-natural">Natural Gas</button>
-    <button class="energy-btn active-nuclear" onclick="toggleDataset(1, 'nuclear')" id="btn-nuclear">Nuclear Energy</button>
-    <button class="energy-btn active-renewables" onclick="toggleDataset(2, 'renewables')" id="btn-renewables">Renewables</button>
-  </div>
+  <!-- Load Signika font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&display=swap" rel="stylesheet">
 
-  <div class="chart-container">
-    <canvas id="electricityChart"></canvas>
-  </div>
-
-  <script>
-    const chartData = {
-      labels: ['2019', '2020', '2021', '2022', '2023'],
-      datasets: [
-        {
-          label: 'Natural Gas',
-          backgroundColor: '#a3cd84',
-          data: [134.7, 131.1, 133.4, 125.5, 118.9],
-          stack: 'Stack 0',
-          hidden: false
-        },
-        {
-          label: 'Nuclear Energy',
-          backgroundColor: '#8bbce7',
-          data: [0, 1.6, 10.5, 20.1, 32.3],
-          stack: 'Stack 0',
-          hidden: false
-        },
-        {
-          label: 'Renewables',
-          backgroundColor: '#f3c638',
-          data: [3.8, 4.6, 5.2, 7.8, 13.8],
-          stack: 'Stack 0',
-          hidden: false
+ <style>
+        @import url('https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&display=swap');
+        body {
+          background-color: #f5f7f6;
+          padding: 20px;
+          font-family: 'Signika', sans-serif;
+          color: #969799;
+          margin: 0;
         }
-      ]
-    };
 
-    const config = {
-      type: 'bar',
-      data: chartData,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            ticks: {
-              font: {
-                family: 'Signika'
+        h2 {
+          font-size: 9.5px;
+          margin-bottom: 5.5px;
+        }
+
+        .title-bold { font-weight: 700; }
+        .title-medium { font-weight: 500; margin-left: 5px; }
+        .title-light { font-weight: 300; margin-left: 5px; }
+
+        .chart-container {
+          width: 500px;
+          height: 180;
+        }
+      </style>
+
+      <h2>
+        <span class="title-bold">The UAE’s gross electricity output by source,</span>
+        <span class="title-medium">2019–2023</span>
+        <span class="title-light">(TWh)</span>
+      </h2>
+
+      <div class="chart-container">
+        <canvas id="electricityChart" width="500" height="160"></canvas>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        const years = [2019, 2020, 2021, 2022, 2023];
+        const naturalGas = [134.7, 131.1, 133.4, 125.5, 118.9];
+        const nuclearEnergy = [0, 1.6, 10.5, 20.1, 32.3];
+        const renewables = [3.8, 4.6, 5.2, 7.8, 13.8];
+
+        const ctx = document.getElementById('electricityChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: years,
+            datasets: [
+              {
+                label: 'Natural gas',
+                data: naturalGas,
+                backgroundColor: '#43853b'
               },
-              color: '#969799'
-            }
+              {
+                label: 'Nuclear energy',
+                data: nuclearEnergy,
+                backgroundColor: '#666866'
+              },
+              {
+                label: 'Renewables',
+                data: renewables,
+                backgroundColor: '#f39c12'
+              }
+            ]
           },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              font: {
-                family: 'Signika'
+          options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            animation: {
+              duration: 2000,
+              easing: 'easeOutQuart',
+              delay: (ctx) => ctx.dataIndex * 200
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  font: {
+                    family: 'Signika',
+		    weight: '300',
+        size: Math.max(7.5, window.innerWidth / 100) // Dynamically adjusts font size
+                  },
+                  color: '#969799'
+                }
+              }
+            },
+            scales: {
+              x: {
+                stacked: true,
+		grid: {
+     		 display: false  // Disables the grid on the x-axis
+    			},
+                ticks: {
+                  font: {
+                    family: 'Signika',
+		    weight: '300',
+        size: Math.max(7.5, window.innerWidth / 100) // Dynamically adjusts font size
+                  },
+                  color: '#969799'
+                }
               },
-              color: '#969799'
+              y: {
+grid: {
+      display: true, // Show the grid
+      borderDash: [1, 4], // Makes the grid lines dotted (2px line, 4px gap)
+      color: '#cccccc' // Optional: soft grey color
+    },
+                stacked: true,
+                beginAtZero: true,
+                ticks: {
+                  font: {
+                    family: 'Signika',
+		    weight: '300',
+        size: Math.max(7.5, window.innerWidth / 100) // Dynamically adjusts font size
+                  },
+                  color: '#969799'
+                }
+              }
             }
           }
-        }
-      }
-    };
+        });
+      </script>
 
-    const myChart = new Chart(
-      document.getElementById('electricityChart'),
-      config
-    );
 
-    function toggleDataset(index, type) {
-      const dataset = myChart.data.datasets[index];
-      const button = document.getElementById(`btn-${type}`);
-
-      dataset.hidden = !dataset.hidden;
-
-      if (!dataset.hidden) {
-        button.classList.add(`active-${type}`);
-      } else {
-        button.classList.remove(`active-${type}`);
-      }
-
-      myChart.update();
-    }
-  </script>
 </body>
 </html>
